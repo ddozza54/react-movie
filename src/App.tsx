@@ -1,11 +1,14 @@
-function App() {
+import { Outlet } from 'react-router';
+import Header from './components/Header';
+
+export default function App() {
   return (
-    <div>
-      Home
-    </div>
+    <>
+      <Header />
+      <Outlet />
+    </>
   );
 }
 
 
 
-export default App
