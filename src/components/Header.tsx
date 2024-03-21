@@ -2,7 +2,8 @@ import { Link, useMatch } from 'react-router-dom';
 import pepeImg from '../assets/pepe-movie.jpg';
 import popcornImg from '../assets/IMG_2356.png'
 import styled from 'styled-components';
-import { motion } from "framer-motion"
+import { motion, useScroll } from "framer-motion"
+import { useEffect } from 'react';
 
 export default function Header() {
     const homeMatch = useMatch('/');
@@ -15,7 +16,7 @@ export default function Header() {
                 <img src={pepeImg} className='w-32' />
                 <span className='font-bold text-2xl text-green-700'>PEPEPLIX</span>
             </div>
-            <nav className='font-bold w-[80%] '>
+            <nav className='font-bold w-[80%] relative'>
                 <ul className='w-full flex justify-around items-center'>
                     <NavListItem>
                         <Link to={'/'}>POPULAR</Link>
