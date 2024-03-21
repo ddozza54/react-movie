@@ -12,10 +12,10 @@ export default function Header() {
 
     return (
         <div className='bg-[#F0DFD5] w-full flex justify-between items-center'>
-            <div>
+            <Link to='/'> <div>
                 <img src={pepeImg} className='w-32' />
                 <span className='font-bold text-2xl text-green-700'>PEPEPLIX</span>
-            </div>
+            </div></Link>
             <nav className='font-bold w-[80%] relative'>
                 <ul className='w-full flex justify-around items-center'>
                     <NavListItem>
