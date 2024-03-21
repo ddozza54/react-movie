@@ -1,6 +1,9 @@
 import { Link, useMatch } from 'react-router-dom';
 import pepeImg from '../assets/pepe-movie.jpg';
 import popcornImg from '../assets/IMG_2356.png'
+import styled from 'styled-components';
+import { motion } from "framer-motion"
+
 export default function Header() {
     const homeMatch = useMatch('/');
     const comingSoonMatch = useMatch('/coming-soon');
@@ -14,25 +17,34 @@ export default function Header() {
             </div>
             <nav className='font-bold w-[80%] '>
                 <ul className='w-full flex justify-around items-center'>
-                    <li>
+                    <NavListItem>
                         <Link to={'/'}>POPULAR</Link>
-                        {homeMatch && <img src={popcornImg} />}
-                    </li>
-                    <li>
+                        {homeMatch && <PopcornImg layoutId='popcorn' src={popcornImg} />}
+                    </NavListItem>
+                    <NavListItem>
                         <Link to={'/coming-soon'}>
                             COMING SOON
                         </Link>
-                        {comingSoonMatch && <img src={popcornImg} />}
-                    </li>
-                    <li>
+                        {comingSoonMatch && <PopcornImg layoutId='popcorn' src={popcornImg} />}
+                    </NavListItem>
+                    <NavListItem>
                         <Link to={'/now-playing'}>
                             NOW PLAYING
                         </Link>
-                        {nowPlayingMatch && <img src={popcornImg} />}
-                    </li>
+                        {nowPlayingMatch && <PopcornImg layoutId='popcorn' src={popcornImg} />}
+                    </NavListItem>
                 </ul>
             </nav>
         </div>
     );
 }
 
+const NavListItem = styled.li`
+    display:  flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+const PopcornImg = styled(motion.img)`
+    width: 3rem;
+`
