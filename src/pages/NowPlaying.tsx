@@ -21,10 +21,13 @@ interface Movie {
 }
 
 export default function NowPlaying() {
-    const API_KEY = '335df83d9ee91cda767206351426b250';
     const url = 'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1&region=kr';
-    const getMovies = () => fetch(`${url}&api_key=${API_KEY}`).then(res => res.json());
+    const getMovies = () => fetch(`${url}&api_key=${process.env.REACT_APP_API_KEY}`).then(res => res.json());
     const { data, isFetching } = useQuery<Movies>({ queryKey: ['popularMoives'], queryFn: getMovies })
+    const onMovieClicked = (movieId: number) => {
+
+    }
+
     return (
         <>
             {isFetching ? <span>Loading..</span> :
@@ -41,11 +44,15 @@ export default function NowPlaying() {
                         </div>
                     </Banner>
                     <MoviesBox>
-                        {data?.results.map(movie => <div key={movie.id} className='p-3 flex flex-col justify-center items-center' >
-                            <MovieImg src={makeImagePath(String(movie.poster_path))}
-                                whileHover={{ scale: 1.1 }} />
-                            <h4 className='font-bold'>{movie.title}</h4>
-                        </div>)}
+                        {data?.results.map(movie =>
+                            <div
+                                onClick={() => onMovieClicked(movie.id)}
+                                key={movie.id}
+                                className='p-3 flex flex-col justify-center items-center' >
+                                <MovieImg src={makeImagePath(String(movie.poster_path))}
+                                    whileHover={{ scale: 1.1 }} />
+                                <h4 className='font-bold'>{movie.title}</h4>
+                            </div>)}
                     </MoviesBox>
 
 
