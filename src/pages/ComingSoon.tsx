@@ -23,7 +23,7 @@ interface Movie {
 export default function ComingSoon() {
     const url = 'https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1&region=kr';
     const getMovies = () => fetch(`${url}&api_key=${process.env.REACT_APP_API_KEY}`).then(res => res.json());
-    const { data, isFetching } = useQuery<Movies>({ queryKey: ['popularMoives'], queryFn: getMovies })
+    const { data, isFetching } = useQuery<Movies>({ queryKey: ['comingSoonMoives'], queryFn: getMovies })
     return (
         <>
             {isFetching ? <span>Loading..</span> :

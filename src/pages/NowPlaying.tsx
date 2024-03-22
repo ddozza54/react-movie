@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { makeImagePath } from '../utils';
 import { motion } from 'framer-motion';
 import goodPepe from '../assets/goodPepe.png';
+import { useNavigate } from 'react-router';
 interface Movies {
     results: Movie[],
 }
@@ -23,18 +24,19 @@ interface Movie {
 export default function NowPlaying() {
     const url = 'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1&region=kr';
     const getMovies = () => fetch(`${url}&api_key=${process.env.REACT_APP_API_KEY}`).then(res => res.json());
-    const { data, isFetching } = useQuery<Movies>({ queryKey: ['popularMoives'], queryFn: getMovies })
+    const { data, isFetching } = useQuery<Movies>({ queryKey: ['nowPlayingMoives'], queryFn: getMovies })
+    const navigate = useNavigate();
     const onMovieClicked = (movieId: number) => {
-
+        navigate(`/movie/${movieId}`)
     }
-
+    console.log(data)
     return (
         <>
             {isFetching ? <span>Loading..</span> :
 
                 <>
                     <Banner
-                        bgPhoto={makeImagePath(data?.results[2].backdrop_path || "")}
+                        bgphoto={makeImagePath(data?.results[2].backdrop_path || "")}
                     >
                         <h3 className='font-extrabold text-4xl'>{data?.results[2].title}</h3>
                         <span>{data?.results[0].overview}</span>
@@ -63,7 +65,7 @@ export default function NowPlaying() {
     );
 }
 
-const Banner = styled.div<{ bgPhoto: string }>`
+const Banner = styled.div<{ bgphoto: string }>`
 width: auto;
   height: 50vh;
   display: flex;
@@ -72,7 +74,7 @@ width: auto;
   padding: 60px 0 0 60px;
   margin-bottom: 5rem;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgPhoto});
+    url(${(props) => props.bgphoto});
   background-size: cover;
 `;
 
