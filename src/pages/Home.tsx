@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { getMoives, makeImagePath } from '../utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import goodPepe from '../assets/goodPepe.png';
 import { useMatch, useNavigate } from 'react-router';
+import Banner from '../components/Banner';
 
 export default function Home() {
     const { data, isFetching } = getMoives('popular');
@@ -21,16 +21,7 @@ export default function Home() {
         <>
             {isFetching ? <span>Loading..</span> :
                 <>
-                    <Banner
-                        bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
-                    >
-                        <h3 className='font-extrabold text-4xl'>{data?.results[0].title}</h3>
-                        <span>{data?.results[0].overview}</span>
-                        <div className='w-full flex justify-end'>
-                            <span className='text-xl text-green-500'>Pepe's Choice</span>
-                            <img src={goodPepe} className='w-40 ' />
-                        </div>
-                    </Banner>
+                    <Banner movieData={data?.results[0]} />
                     <AnimatePresence>
                         {moviePathMatch &&
                             <ModalBackground>
@@ -72,18 +63,7 @@ export default function Home() {
     );
 }
 
-const Banner = styled.div<{ bgphoto: string }>`
-width: auto;
-  height: 50vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 60px 0 0 60px;
-  margin-bottom: 5rem;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgphoto});
-  background-size: cover;
-`;
+
 
 const MoviesBox = styled.div`
     display:flex ;
