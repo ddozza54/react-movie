@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { getMoives, makeImagePath } from '../utils';
 import { motion } from 'framer-motion';
-import goodPepe from '../assets/goodPepe.png';
 import { useNavigate } from 'react-router';
+import Banner from '../components/Banner';
 
 export default function NowPlaying() {
     const { data, isFetching } = getMoives('now-playing')
@@ -13,18 +13,8 @@ export default function NowPlaying() {
     return (
         <>
             {isFetching ? <span>Loading..</span> :
-
                 <>
-                    <Banner
-                        bgphoto={makeImagePath(data?.results[2].backdrop_path || "")}
-                    >
-                        <h3 className='font-extrabold text-4xl'>{data?.results[2].title}</h3>
-                        <span>{data?.results[0].overview}</span>
-                        <div className='w-full flex justify-end'>
-                            <span className='text-xl text-green-500'>Pepe's Choice</span>
-                            <img src={goodPepe} className='w-40 ' />
-                        </div>
-                    </Banner>
+                    <Banner movieData={data?.results[2]} />
                     <MoviesBox>
                         {data?.results.map(movie =>
                             <div
@@ -44,19 +34,6 @@ export default function NowPlaying() {
         </>
     );
 }
-
-const Banner = styled.div<{ bgphoto: string }>`
-width: auto;
-  height: 50vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 60px 0 0 60px;
-  margin-bottom: 5rem;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgphoto});
-  background-size: cover;
-`;
 
 const MoviesBox = styled.div`
     display:flex ;
