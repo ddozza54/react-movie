@@ -1,35 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { makeImagePath } from '../utils';
+import { getMoives, makeImagePath } from '../utils';
 import { motion } from 'framer-motion';
 import goodPepe from '../assets/goodPepe.png';
 import { useNavigate } from 'react-router';
-interface Movies {
-    results: Movie[],
-}
-interface Movie {
-    adult: false,
-    backdrop_path: "/oFAukXiMPrwLpbulGmB5suEZlrm.jpg",
-    id: 624091,
-    original_language: "id",
-    original_title: "Sri Asih",
-    overview: "Alana discover the truth about her origi: she’s not an ordinary human being. She may be the gift for humanity and become its protector as Sri Asih. Or a destruction, if she can’t control her anger."
-    popularity: 1288.752
-    poster_path: "/wShcJSKMFg1Dy1yq7kEZuay6pLS.jpg"
-    release_date: "2023-07-01"
-    title: "Sri Asih"
-    vote_average: 6.4
-}
 
 export default function NowPlaying() {
-    const url = 'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1&region=kr';
-    const getMovies = () => fetch(`${url}&api_key=${process.env.REACT_APP_API_KEY}`).then(res => res.json());
-    const { data, isFetching } = useQuery<Movies>({ queryKey: ['nowPlayingMoives'], queryFn: getMovies })
+    const { data, isFetching } = getMoives('now-playing')
     const navigate = useNavigate();
     const onMovieClicked = (movieId: number) => {
         navigate(`/movie/${movieId}`)
     }
-    console.log(data)
     return (
         <>
             {isFetching ? <span>Loading..</span> :

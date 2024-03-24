@@ -1,31 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { makeImagePath } from '../utils';
+import { getMoives, makeImagePath } from '../utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import goodPepe from '../assets/goodPepe.png';
 import { useMatch, useNavigate } from 'react-router';
-import { useEffect } from 'react';
-interface Movies {
-    results: Movie[],
-}
-interface Movie {
-    adult: boolean,
-    backdrop_path: string,
-    id: number,
-    original_language: string,
-    original_title: string,
-    overview: string,
-    poster_path: string,
-    release_date: Date,
-    title: string,
-    vote_average: number
-}
+
 export default function Home() {
-    // const ApiKey = import.meta.env.VITE_API_KEY || process.env.REACT_APP_API_KEY;
-    const API_KEY = '0d83498a1ddbe23de29e5af638c59a73';
-    const url = 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&region=kr';
-    const getMovies = () => fetch(`${url}&api_key=${API_KEY}`).then(res => res.json());
-    const { data, isFetching, isLoading } = useQuery<Movies>({ queryKey: ['popularMoives'], queryFn: getMovies })
+    const { data, isFetching } = getMoives('popular');
     const navigate = useNavigate();
     const moviePathMatch = useMatch('/movie/:movieId');
     const onMovieClick = (movieId: number) => {
@@ -37,11 +17,9 @@ export default function Home() {
     const clickedMovie =
         moviePathMatch?.params.movieId &&
         data?.results.find((movie) => String(movie.id) == moviePathMatch.params.movieId);
-
-    console.log(clickedMovie)
     return (
         <>
-            {isFetching || isLoading ? <span>Loading..</span> :
+            {isFetching ? <span>Loading..</span> :
                 <>
                     <Banner
                         bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
@@ -56,12 +34,14 @@ export default function Home() {
                     <AnimatePresence>
                         {moviePathMatch &&
                             <ModalBackground>
-                                <MovieModal className='flex flex-col rounded-md '>
-                                    <ClosedButton onClick={onCloseButtonClick}>
-                                        <svg className='text-green-400 absolute right-2 top-2' width={40} data-slot="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path clip-rule="evenodd" fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"></path>
-                                        </svg>
-                                    </ClosedButton>
+                                <ClosedButton onClick={onCloseButtonClick}>
+                                    <svg className='text-green-400 absolute right-2 top-2' width={40} data-slot="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clip-rule="evenodd" fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"></path>
+                                    </svg>
+                                </ClosedButton>
+
+                                <MovieModal className='flex flex-col rounded-md'
+                                    layoutId={moviePathMatch.params.movieId}>
                                     {clickedMovie && (
                                         <>
                                             <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent),url(${makeImagePath(clickedMovie.backdrop_path)})` }} />
@@ -73,17 +53,18 @@ export default function Home() {
                             </ModalBackground>
                         }
                     </AnimatePresence>
-                    <MoviesBox>
-                        {data?.results.map(movie =>
-                            <div key={movie.id}
-                                onClick={() => onMovieClick(movie.id)}
-                                className='p-3 flex flex-col justify-center items-center' >
-                                <MovieImg src={makeImagePath(String(movie.poster_path))}
-                                    whileHover={{ scale: 1.1 }} />
-                                <h4 className='font-bold'>{movie.title}</h4>
-                            </div>)}
-                    </MoviesBox>
-
+                    <AnimatePresence>
+                        <MoviesBox>
+                            {data?.results.map(movie =>
+                                <Movie key={movie.id}
+                                    layoutId={String(movie.id)}
+                                    onClick={() => onMovieClick(movie.id)} >
+                                    <MovieImg src={makeImagePath(String(movie.poster_path))}
+                                        whileHover={{ scale: 1.1 }} />
+                                    <h4 className='w-full font-bold'>{movie.title}</h4>
+                                </Movie>)}
+                        </MoviesBox>
+                    </AnimatePresence>
                 </>
             }
 
@@ -112,12 +93,20 @@ const MoviesBox = styled.div`
     `
 
 const MovieImg = styled(motion.img)`
-width: 18rem;
+width: 13rem;
 border-radius: 20px;
 &:hover{
     cursor: pointer;
 }
 `;
+
+const Movie = styled(motion.div)`
+padding: 1rem;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+`
 
 const MovieModal = styled(motion.div)`
 width: 60%;
